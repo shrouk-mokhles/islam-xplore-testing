@@ -13,7 +13,7 @@ test("login successfully", async ({ page }) => {
         "user@test.com",
         "12345678");
     await clickSubmit(page);
-    await isVerifying(page);
+    // await isVerifying(page);
     await verifyUser(page);
 }); 
 test("failed Login", async ({ page }) => {

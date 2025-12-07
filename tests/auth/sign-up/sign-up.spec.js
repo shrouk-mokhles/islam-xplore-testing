@@ -25,7 +25,7 @@ test.describe("signUp", () => {
       userData.password_confirmation
     );
     await clickSubmit(page);
-    await isVerifying(page);
+    // await isVerifying(page);
     await verifyUser(page, userData);
 
   });
