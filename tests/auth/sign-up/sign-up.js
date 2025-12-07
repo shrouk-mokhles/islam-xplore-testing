@@ -12,9 +12,18 @@ const emailInput = "input[name='email']";
 const passwordInput = "input[name='password']";
 const confirmPasswordInput = "input[name='password_confirmation']";
 const signupBtn = "button[type='submit']";
-const verificationInput = "input[name='verification_code']";
 const registrationFailedMsg = "text=Registration Failed";
 const emailInvalidMsg = "text=Email is invalid";
+const randomEmail = `user_${Date.now()}@test.com`;
+const verificationInput = "input[name='verification_code']";
+const verifyBtn = "button[type='submit']";
+const homeTitle = "h1"
+export const userData = {
+  name: "shrouk",
+  email: `user_${Date.now()}@test.com`,
+  password: "Welcome2creiden*",
+  password_confirmation: "Welcome2creiden*",
+};
 
 const invalidPasswordCases = [
   {
@@ -40,16 +49,16 @@ const invalidEmailCases = [
   {
     email: "shroukmokhes@creiden",
     emailErrorSelector: emailInvalidMsg,
-},
-{
-  email: "shroukmokhlescreiden.com",
-  emailErrorSelector: emailInvalidMsg
   },
-{
-  email: "@creiden.com",
-  emailErrorSelector : emailInvalidMsg
-}
-]
+  {
+    email: "shroukmokhlescreiden.com",
+    emailErrorSelector: emailInvalidMsg,
+  },
+  {
+    email: "@creiden.com",
+    emailErrorSelector: emailInvalidMsg,
+  },
+];
 
 export async function openSignUp(page) {
   await openPage(page, signupUrl);
@@ -89,27 +98,52 @@ export async function invalidPassword(page) {
     await fillSignupForm(
       page,
       "shrouk",
-      "shroukmokhles@creiden.com",
+      randomEmail,
       testCase.pwd,
       testCase.pwd
     );
-  await clickBtn(page,signupBtn)
-    await hasElement(page, testCase.errorSelector)
-    await page.reload()
+    await clickBtn(page, signupBtn);
+    await hasElement(page, testCase.errorSelector);
+    await page.reload();
   }
 }
 
-export async function invalidEmail(page){
+export async function invalidEmail(page) {
   for (const testCase of invalidEmailCases) {
     await fillSignupForm(
       page,
       "shrouk",
       testCase.email,
       "Welcome2creiden*",
-      "Welcome2creiden*",
+      "Welcome2creiden*"
     );
     await clickBtn(page, signupBtn);
     await hasElement(page, testCase.emailErrorSelector);
-    await page.reload()
+    await page.reload();
   }
 }
+
+export async function verifyUser(page, userData) {
+  const response = await fetch(
+    "https://be.islam-xplore.betazone.xyz/api/auth/register",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        captcha: "",
+        email: userData.email,
+        name: userData.name,
+        password: userData.password,
+        password_confirmation: userData.password_confirmation,
+      }),
+    }
+  );
+  const data = await response.json();
+  console.log(data.data.code);
+  await typeText(page, verificationInput, data.data.code);
+await clickBtn(page,verifyBtn)
+  await hasElement(page, homeTitle);  
+  
+}
+ 
+
