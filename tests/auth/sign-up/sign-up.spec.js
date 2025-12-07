@@ -3,6 +3,7 @@ import {
   openSignUp,
   fillSignupForm,
   clickSubmit,
+  clickSubmitVerify,
   isVerifying,
   registrationFailed,
   emailInvalid,
@@ -11,8 +12,6 @@ import {
   verifyUser,
   userData,
 } from "./sign-up.js";
-
-
 
 test.describe("signUp", () => {
   test("signup Successflly", async ({ page }) => {
@@ -24,8 +23,7 @@ test.describe("signUp", () => {
       userData.password,
       userData.password_confirmation
     );
-    await clickSubmit(page);
-    // await isVerifying(page);
+    await clickSubmitVerify(page);
     await verifyUser(page, userData);
 
   });

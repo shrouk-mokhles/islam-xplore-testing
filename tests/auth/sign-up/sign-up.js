@@ -77,6 +77,13 @@ export async function fillSignupForm(
   await typeText(page, confirmPasswordInput, confirmPassword);
 }
 
+export async function clickSubmitVerify(page) {
+  await clickBtn(page, signupBtn);
+  await page.waitForResponse(
+    (res) => res.url().includes("/register") && res.status() === 200
+  );
+}
+
 export async function clickSubmit(page) {
   await clickBtn(page, signupBtn);
 }
@@ -139,11 +146,9 @@ export async function verifyUser(page, userData) {
     }
   );
   const data = await response.json();
-  console.log(data.data.code);
   await typeText(page, verificationInput, data.data.code);
-await clickBtn(page,verifyBtn)
-  await hasElement(page, homeTitle);  
-  
+  await clickBtn(page, verifyBtn);
+  await hasElement(page, homeTitle);
 }
  
 

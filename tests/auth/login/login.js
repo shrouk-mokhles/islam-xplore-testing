@@ -23,17 +23,29 @@ export async function fillLognin(page,email,password) {
     }
     
 
+export async function clickSubmitVerify(page) {
+  await clickBtn(page, loginBtn);
+
+  await page.waitForResponse((res) => {
+    return res.url().includes("/initiate-login") && res.status() === 200;
+  });
+
+  await page.waitForSelector("input[name='verification_code']", {
+    state: "visible",
+  });
+}
+
 export async function clickSubmit(page) {
-    await clickBtn(page, loginBtn);
-}
-export async function isVerifying(page){
-    await hasElement(page, verificationInput);
+  await clickBtn(page, loginBtn);
 }
 
-export async function failedLogin(page){
-    await hasElement(page, errorMsg)
+export async function isVerifying(page) {
+  await hasElement(page, verificationInput);
 }
 
+export async function failedLogin(page) {
+  await hasElement(page, errorMsg);
+}
 
 export async function verifyUser(page) {
   const response = await fetch(
@@ -44,12 +56,11 @@ export async function verifyUser(page) {
       body: JSON.stringify({
         captcha: "",
         email: "user@test.com",
-        password:"12345678",
+        password: "12345678",
       }),
     }
   );
   const data = await response.json();
-  console.log(data.data.code);
   await typeText(page, verificationInput, data.data.code);
   await clickBtn(page, verifyBtn);
   await hasElement(page, homeTitle);
