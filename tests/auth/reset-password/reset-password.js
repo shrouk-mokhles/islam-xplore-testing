@@ -28,30 +28,22 @@ export async function clickSubmit(page) {
 }
 
 export async function verifyUser(page) {
-  const response = await fetch(
-    "https://be.islam-xplore.betazone.xyz/api/auth/request-reset-password",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        captcha: "",
-        email: "shrouk.mokhles@creiden.com",
-        password: "Welcome2creiden*",
-      }),
-    }
+  const response = await page.waitForResponse(
+    (res) =>
+      res.url().includes("/request-reset-password") && res.status() === 200
   );
   const data = await response.json();
   await typeText(page, verificationInput, data.data.code);
   await clickBtn(page, confirmBtn);
- await page.waitForResponse(
-   (res) =>
-     res.url().includes("/check-reset-password-code") && res.status() === 200
- );
+  await page.waitForResponse(
+    (res) =>
+      res.url().includes("/check-reset-password-code") && res.status() === 200
+  );
 }
 
-
 export async function createNewPassword(page) {
-    await typeText(page, newPasswordInput, "Welcome2creiden2*");
-    await typeText(page, confirmNewPasswordInput, "Welcome2creiden2*");
+  await typeText(page, newPasswordInput, "Welcome2creiden2*");
+  await typeText(page, confirmNewPasswordInput, "Welcome2creiden2*");
+  await clickBtn(page, confirmBtn);
 }
 
