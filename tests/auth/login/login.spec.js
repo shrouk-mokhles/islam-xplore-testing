@@ -7,6 +7,7 @@ import {
   isVerifying,
   failedLogin,
   verifyUser,
+  emptyFields
 } from "./login.js";
 test("login successfully", async ({ page }) => {
   await openLoginPage(page);
@@ -23,3 +24,8 @@ test("failed Login", async ({ page }) => {
     await failedLogin(page);
     
 });
+test("empty fields", async ({ page }) => {
+  await openLoginPage(page),
+    await clickSubmit(page),
+await emptyFields(page)
+}) 

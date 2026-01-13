@@ -13,6 +13,7 @@ const invalidPassword = "text=The credentials you entered are incorrect";
 const errorMsg = "text=The credentials you entered are incorrect";
 const verifyBtn = "button[type='submit']"; 
 const homeTitle = "h1";
+const emptyFieldsMsg = "text= Email is required"; 
 
 export async function openLoginPage(page) {
     await openPage(page, loginUrl);
@@ -64,4 +65,8 @@ export async function verifyUser(page) {
   await typeText(page, verificationInput, data.data.code);
   await clickBtn(page, verifyBtn);
   await hasElement(page, homeTitle);
+}
+
+export async function emptyFields(page) {
+  await hasElement(page, emptyFieldsMsg);
 }

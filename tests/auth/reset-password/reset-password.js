@@ -13,6 +13,10 @@ const verificationInput = "input[name='verification_code']";
 const newPasswordPage = "https://islam-xplore.vercel.app/en/reset-password";
 const newPasswordInput = "input[name='password']";
 const confirmNewPasswordInput = "input[name='password_confirmation']";
+const emptyEmailErrorMsg = "text=Email is required";
+const unregisteredemailErrorMsg = "text=The selected email is invalid.";
+const randomEmail = `user_${Date.now()}@test.com`;
+
 
 export async function openResetPasswordPage(page) {
     await openPage(page,resrtPasswordUrl)
@@ -46,4 +50,17 @@ export async function createNewPassword(page) {
   await typeText(page, confirmNewPasswordInput, "Welcome2creiden2*");
   await clickBtn(page, confirmBtn);
 }
+
+export async function emptyEmailError(page) {
+  await hasElement(page, emptyEmailErrorMsg)
+}
+
+export async function unregisteredemail(page) {
+  await typeText(page,emailField, randomEmail)
+}
+export async function unregisteredEmailError(page) {
+  await hasElement(page,unregisteredemailErrorMsg)
+}
+
+
 
