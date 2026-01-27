@@ -17,7 +17,7 @@ const emailInvalidMsg = "text=Email is invalid";
 const randomEmail = `user_${Date.now()}@test.com`;
 const verificationInput = "input[name='verification_code']";
 const verifyBtn = "button[type='submit']";
-const homeTitle = "h1"
+const homeTitle = "h1";
 export const userData = {
   name: "shrouk",
   email: `user_${Date.now()}@test.com`,
@@ -69,7 +69,7 @@ export async function fillSignupForm(
   name,
   email,
   password,
-  confirmPassword
+  confirmPassword,
 ) {
   await typeText(page, nameInput, name);
   await typeText(page, emailInput, email);
@@ -78,10 +78,20 @@ export async function fillSignupForm(
 }
 
 export async function clickSubmitVerify(page) {
-  await clickBtn(page, signupBtn);
-  await page.waitForResponse(
-    (res) => res.url().includes("/register") && res.status() === 200
+  // Wait for response while clicking signup
+  const responsePromise = page.waitForResponse(
+    (res) => res.url().includes("/register") && res.status() === 200,
   );
+
+  await clickBtn(page, signupBtn);
+
+  const response = await responsePromise;
+  const body = await response.json();
+
+  // Wait for verification input to appear
+  await page.waitForSelector(verificationInput, { state: "visible" });
+
+  return body.data.code; // return the OTP
 }
 
 export async function clickSubmit(page) {
@@ -107,7 +117,7 @@ export async function invalidPassword(page) {
       "shrouk",
       randomEmail,
       testCase.pwd,
-      testCase.pwd
+      testCase.pwd,
     );
     await clickBtn(page, signupBtn);
     await hasElement(page, testCase.errorSelector);
@@ -122,7 +132,7 @@ export async function invalidEmail(page) {
       "shrouk",
       testCase.email,
       "Welcome2creiden*",
-      "Welcome2creiden*"
+      "Welcome2creiden*",
     );
     await clickBtn(page, signupBtn);
     await hasElement(page, testCase.emailErrorSelector);
@@ -130,25 +140,8 @@ export async function invalidEmail(page) {
   }
 }
 
-export async function verifyUser(page, userData) {
-  const response = await fetch(
-    "https://be.islam-xplore.betazone.xyz/api/auth/register",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        captcha: "",
-        email: userData.email,
-        name: userData.name,
-        password: userData.password,
-        password_confirmation: userData.password_confirmation,
-      }),
-    }
-  );
-  const data = await response.json();
-  await typeText(page, verificationInput, data.data.code);
+export async function verifyUser(page, verificationCode) {
+  await typeText(page, verificationInput, verificationCode);
   await clickBtn(page, verifyBtn);
   await hasElement(page, homeTitle);
 }
- 
-

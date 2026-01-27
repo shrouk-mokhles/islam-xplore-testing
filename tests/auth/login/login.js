@@ -25,15 +25,21 @@ export async function fillLognin(page,email,password) {
     
 
 export async function clickSubmitVerify(page) {
+  // Wait for response while clicking submit
+  const responsePromise = page.waitForResponse(
+    (res) => res.url().includes("/initiate-login") && res.status() === 200,
+  );
+
   await clickBtn(page, loginBtn);
 
-  await page.waitForResponse((res) => {
-    return res.url().includes("/initiate-login") && res.status() === 200;
-  });
+  // Get the verification code from backend response
+  const response = await responsePromise;
+  const body = await response.json();
 
-  await page.waitForSelector("input[name='verification_code']", {
-    state: "visible",
-  });
+  // Wait for verification input to appear
+  await page.waitForSelector(verificationInput, { state: "visible" });
+
+  return body.data.code; // return the OTP
 }
 
 export async function clickSubmit(page) {
@@ -48,21 +54,8 @@ export async function failedLogin(page) {
   await hasElement(page, errorMsg);
 }
 
-export async function verifyUser(page) {
-  const response = await fetch(
-    "https://be.islam-xplore.betazone.xyz/api/auth/initiate-login",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        captcha: "",
-        email: "user@test.com",
-        password: "12345678",
-      }),
-    }
-  );
-  const data = await response.json();
-  await typeText(page, verificationInput, data.data.code);
+export async function verifyUser(page, verificationCode) {
+  await typeText(page, verificationInput, verificationCode);
   await clickBtn(page, verifyBtn);
   await hasElement(page, homeTitle);
 }

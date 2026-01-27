@@ -10,7 +10,6 @@ const resrtPasswordUrl = "https://islam-xplore.vercel.app/en/reset-password";
 const emailField = "[placeholder='Email']";
 const confirmBtn = "button[type='submit']";
 const verificationInput = "input[name='verification_code']";
-const newPasswordPage = "https://islam-xplore.vercel.app/en/reset-password";
 const newPasswordInput = "input[name='password']";
 const confirmNewPasswordInput = "input[name='password_confirmation']";
 const emptyEmailErrorMsg = "text=Email is required";

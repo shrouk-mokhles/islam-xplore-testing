@@ -1,31 +1,30 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import {
   openLoginPage,
   fillLognin,
   clickSubmit,
   clickSubmitVerify,
-  isVerifying,
   failedLogin,
   verifyUser,
-  emptyFields
+  emptyFields,
 } from "./login.js";
 test("login successfully", async ({ page }) => {
   await openLoginPage(page);
   await fillLognin(page, "user@test.com", "12345678");
-  await clickSubmitVerify(page);
-  await verifyUser(page);
-}); 
+
+  // Get the OTP from network response
+  const verificationCode = await clickSubmitVerify(page);
+
+  // Use OTP to verify user
+  await verifyUser(page, verificationCode);
+});
+
 test("failed Login", async ({ page }) => {
-    await openLoginPage(page),
-        await fillLognin(page,
-            "user@test.coma",
-            "12345678");
-    await clickSubmit(page);
-    await failedLogin(page);
-    
+  (await openLoginPage(page),
+    await fillLognin(page, "user@test.coma", "12345678"));
+  await clickSubmit(page);
+  await failedLogin(page);
 });
 test("empty fields", async ({ page }) => {
-  await openLoginPage(page),
-    await clickSubmit(page),
-await emptyFields(page)
-}) 
+  (await openLoginPage(page), await clickSubmit(page), await emptyFields(page));
+});

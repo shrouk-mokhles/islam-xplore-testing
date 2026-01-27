@@ -14,19 +14,23 @@ import {
 } from "./sign-up.js";
 
 test.describe("signUp", () => {
-  test("signup Successflly", async ({ page }) => {
-    await openSignUp(page);
-    await fillSignupForm(
-      page,
-      userData.name,
-      userData.email,
-      userData.password,
-      userData.password_confirmation
-    );
-    await clickSubmitVerify(page);
-    await verifyUser(page, userData);
+test("signup successfully", async ({ page }) => {
+  await openSignUp(page);
 
-  });
+  await fillSignupForm(
+    page,
+    userData.name,
+    userData.email,
+    userData.password,
+    userData.password_confirmation,
+  );
+
+  // Capture OTP from backend response
+  const verificationCode = await clickSubmitVerify(page);
+
+  // Verify user
+  await verifyUser(page, verificationCode);
+});
 
   test("signup with registered email", async ({ page }) => {
     await openSignUp(page);
